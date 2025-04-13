@@ -35,11 +35,21 @@ const { {{ imp.name }} } = require({{ imp.from | tojson }});
 module.exports = {
   content: {{ render_js(content) }},
   theme: {{ render_js(theme) }},
-  {% if darkMode is defined %}darkMode: {{ darkMode | tojson }},{% endif %}
-  {% if corePlugins is defined %}corePlugins: {{ render_js(corePlugins) }},{% endif %}
-  {% if important is defined %}important: {{ important | tojson }},{% endif %}
-  {% if prefix is defined %}prefix: {{ prefix | tojson }},{% endif %}
-  {% if separator is defined %}separator: {{ separator | tojson }},{% endif %}
+  {% if darkMode is defined %}
+  darkMode: {{ darkMode | tojson }},
+  {% endif %}
+  {% if corePlugins is defined %}
+  corePlugins: {{ render_js(corePlugins) }},
+  {% endif %}
+  {% if important is defined %}
+  important: {{ important | tojson }},
+  {% endif %}
+  {% if prefix is defined %}
+  prefix: {{ prefix | tojson }},
+  {% endif %}
+  {% if separator is defined %}
+  separator: {{ separator | tojson }},
+  {% endif %}
   {% if presets is defined %}
   presets: [
     {% for preset in presets %}
