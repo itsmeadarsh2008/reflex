@@ -219,14 +219,15 @@ def get_bun_version(bun_path: Path | None = None) -> version.Version | None:
         return None
 
 
+@functools.cache  # Caching to avoid repetitive calls
 def prefer_npm_over_bun() -> bool:
     """Check if npm should be preferred over bun.
 
     Returns:
         If npm should be preferred over bun.
     """
-    return npm_escape_hatch() or (
-        constants.IS_WINDOWS and windows_check_onedrive_in_path()
+    return npm_escape_hatch_cached() or (
+        constants.IS_WINDOWS and windows_check_onedrive_in_path_cached()
     )
 
 
@@ -2105,3 +2106,23 @@ def get_user_tier():
         if authenticated_token[0]
         else "anonymous"
     )
+
+
+@functools.cache  # Caching to avoid recalculating current working directory processing
+def windows_check_onedrive_in_path_cached() -> bool:
+    """For windows, check if oneDrive is present in the project dir path.
+
+    Returns:
+        If oneDrive is in the path of the project directory.
+    """
+    return "onedrive" in str(Path.cwd()).lower()
+
+
+@functools.cache  # Caching the environment variable access
+def npm_escape_hatch_cached() -> bool:
+    """If the user sets REFLEX_USE_NPM, prefer npm over bun.
+
+    Returns:
+        If the user has set REFLEX_USE_NPM.
+    """
+    return environment.REFLEX_USE_NPM.get()
