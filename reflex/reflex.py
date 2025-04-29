@@ -86,7 +86,7 @@ def _init(
     prerequisites.initialize_gitignore()
 
     # Initialize the requirements.txt.
-    wrote_to_requirements = prerequisites.initialize_requirements_txt()
+    needs_user_manual_update = prerequisites.initialize_requirements_txt()
 
     template_msg = f" using the {template} template" if template else ""
     # Finish initializing the app.
@@ -94,7 +94,7 @@ def _init(
         f"Initialized {app_name}{template_msg}."
         + (
             f" Make sure to add {constants.RequirementsTxt.DEFAULTS_STUB + constants.Reflex.VERSION} to your requirements.txt or pyproject.toml file."
-            if not wrote_to_requirements
+            if needs_user_manual_update
             else ""
         )
     )
@@ -354,6 +354,7 @@ def run(
 @click.option(
     "--zip/--no-zip",
     default=True,
+    is_flag=True,
     help="Whether to zip the backend and frontend exports.",
 )
 @click.option(
@@ -569,7 +570,7 @@ def makemigrations(message: str | None):
     help="The hostname of the frontend.",
 )
 @click.option(
-    "--interactive",
+    "--interactive/--no-interactive",
     is_flag=True,
     default=True,
     help="Whether to list configuration options and ask for confirmation.",
@@ -711,7 +712,7 @@ def _convert_reflex_loglevel_to_reflex_cli_loglevel(
     return HostingLogLevel.INFO
 
 
-if find_spec("typer"):
+if find_spec("typer") and find_spec("typer.main"):
     import typer  # pyright: ignore[reportMissingImports]
 
     if isinstance(hosting_cli, typer.Typer):
